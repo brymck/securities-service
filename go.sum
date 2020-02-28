@@ -2,8 +2,8 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40 h1:y4B3+GPxKlrigF1ha5FFErxK+sr6sWxQovRMzwMhejo=
 github.com/bmizerany/pat v0.0.0-20170815010413-6226ea591a40/go.mod h1:8rLXio+WjiTceGBHIoTvn60HIbs7Hm7bcHjyrSqYB9c=
-github.com/brymck/helpers v0.0.0-20200228075628-ff0003a64e4b h1:xt3EhVFnlhwQYPR2sf2Uv4qZusVZkLn7AAJMUAVSjmY=
-github.com/brymck/helpers v0.0.0-20200228075628-ff0003a64e4b/go.mod h1:sakX9iC/09eZIQM01UnRR4ZaDUpZ8ULNJSjpuu3Pjaw=
+github.com/brymck/helpers v0.0.0-20200228080823-afea0dd67a5b h1:JOtFv0g6i7wKEoScZMX4GkYPQQ6P7vMlM4/ln7x6+Yg=
+github.com/brymck/helpers v0.0.0-20200228080823-afea0dd67a5b/go.mod h1:sakX9iC/09eZIQM01UnRR4ZaDUpZ8ULNJSjpuu3Pjaw=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=

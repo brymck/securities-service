@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/bmizerany/pat"
+	"github.com/brymck/helpers/webapp"
 	"github.com/justinas/alice"
 
 	"github.com/brymck/securities-service/pkg/models"
@@ -24,29 +25,29 @@ func (app *application) logRequest(next http.Handler) http.Handler {
 func (app *application) getSecurity(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
-		app.notFound(w)
+		webapp.NotFound(w)
 		return
 	}
 
 	s, err := app.securities.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
-			app.notFound(w)
+			webapp.NotFound(w)
 		} else {
-			app.serverError(w, err)
+			webapp.ServerError(w, err)
 		}
 		return
 	}
 
 	price, err := getPrice(s.Symbol)
 	if err != nil {
-		app.serverError(w, err)
+		webapp.ServerError(w, err)
 	}
 	s.Price = price
 
 	err = json.NewEncoder(w).Encode(s)
 	if err != nil {
-		app.serverError(w, err)
+		webapp.ServerError(w, err)
 	}
 }
 
