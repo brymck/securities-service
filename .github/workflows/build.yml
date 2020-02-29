@@ -6,7 +6,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}
   RUN_REGION: ${{ secrets.RUN_REGION }}
-  SERVICE_NAME: ${{ github.event.repository.name }}
+  SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
 
 jobs:
   build-go:
