@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -11,13 +12,15 @@ import (
 	pb "github.com/brymck/securities-service/genproto"
 )
 
-const alphaVantageServAddr = "alpha-vantage-service-4tt23pryoq-uc.a.run.app:443"
-
 var alphaVantageApi pb.AlphaVantageAPIClient
+
+func getServiceAddress(serviceName string) string {
+	return fmt.Sprintf("%s-4tt23pryoq-an.a.run.app:443", serviceName)
+}
 
 func init() {
 	creds := credentials.NewClientTLSFromCert(nil, "")
-	conn, err := grpc.Dial(alphaVantageServAddr, grpc.WithTransportCredentials(creds))
+	conn, err := grpc.Dial(getServiceAddress("alpha-vantage-service"), grpc.WithTransportCredentials(creds))
 	if err != nil {
 		log.Fatal(err)
 	}
