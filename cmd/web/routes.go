@@ -3,20 +3,20 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/bmizerany/pat"
 	"github.com/brymck/helpers/webapp"
 	"github.com/justinas/alice"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/brymck/securities-service/pkg/models"
 )
 
 func (app *application) logRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s - %s %s %s", r.RemoteAddr, r.Proto, r.Method, r.URL.RequestURI())
+		log.Infof("%s - %s %s %s", r.RemoteAddr, r.Proto, r.Method, r.URL.RequestURI())
 
 		next.ServeHTTP(w, r)
 	})
@@ -39,11 +39,14 @@ func (app *application) getSecurity(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	price, err := getPrice(s.Symbol)
-	if err != nil {
-		webapp.ServerError(w, err)
+	if s.Price == 0.0 {
+		log.Infof("retrieving missing price for %s", s.Symbol)
+		price, err := getPrice(s.Symbol)
+		if err != nil {
+			webapp.ServerError(w, err)
+		}
+		s.Price = price
 	}
-	s.Price = price
 
 	err = json.NewEncoder(w).Encode(s)
 	if err != nil {
