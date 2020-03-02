@@ -43,7 +43,7 @@ func getPrice(symbol string) (float64, error) {
 }
 
 func getHistoricalPrices(symbol string) ([]*DatePrice, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	r, err := alphaVantageApi.GetTimeSeries(ctx, &pb.GetTimeSeriesRequest{Symbol: symbol, Full: true})
 	if err != nil {
