@@ -9,8 +9,8 @@ var (
 )
 
 type Security struct {
-	ID    int
+	ID     int
 	Symbol string
-	Name  string
-	Price float64
+	Name   string
+	Price  float64
 }
