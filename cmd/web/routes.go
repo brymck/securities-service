@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/bmizerany/pat"
 	"github.com/brymck/helpers/webapp"
@@ -44,11 +45,49 @@ func (app *application) getSecurity(w http.ResponseWriter, r *http.Request) {
 		price, err := getPrice(s.Symbol)
 		if err != nil {
 			webapp.ServerError(w, err)
+			return
 		}
 		s.Price = price
 	}
 
 	err = json.NewEncoder(w).Encode(s)
+	if err != nil {
+		webapp.ServerError(w, err)
+	}
+}
+
+type InsertSecurityRequest struct {
+	Symbol string `json:"symbol"`
+	Name   string `json:"name"`
+}
+
+func (app *application) insertSecurity(w http.ResponseWriter, r *http.Request) {
+	v := &InsertSecurityRequest{}
+	err := json.NewDecoder(r.Body).Decode(&v)
+	if err != nil {
+		webapp.ClientError(w, http.StatusBadRequest)
+		return
+	}
+
+	if v.Symbol == "" {
+		log.Error("symbol cannot be blank")
+		webapp.ClientError(w, http.StatusBadRequest)
+		return
+	}
+
+	if v.Name == "" {
+		log.Error("name cannot be blank")
+		webapp.ClientError(w, http.StatusBadRequest)
+		return
+	}
+
+	id, err := app.securities.Insert(v.Symbol, v.Name)
+	if err != nil {
+		webapp.ServerError(w, err)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(&models.Security{ID: id})
 	if err != nil {
 		webapp.ServerError(w, err)
 	}
@@ -76,12 +115,16 @@ func (app *application) updatePrices(w http.ResponseWriter, r *http.Request) {
 		webapp.ServerError(w, err)
 	}
 
+	start := time.Now()
+	log.Infof("inserting %d historical prices", len(ts))
 	for _, item := range ts {
 		err = app.prices.Insert(item.Date, s.ID, 1, item.Price)
 		if err != nil {
 			webapp.ServerError(w, err)
 		}
 	}
+	end := time.Now()
+	log.Infof("inserted %d historical prices in %d ms", len(ts), end.Sub(start).Milliseconds())
 }
 
 func (app *application) Routes() http.Handler {
@@ -90,6 +133,7 @@ func (app *application) Routes() http.Handler {
 	mux := pat.New()
 	mux.Get("/security/:id", standardMiddleware.ThenFunc(app.getSecurity))
 	mux.Get("/security/:id/update-prices", standardMiddleware.ThenFunc(app.updatePrices))
+	mux.Post("/security/", standardMiddleware.ThenFunc(app.insertSecurity))
 
 	return standardMiddleware.Then(mux)
 }

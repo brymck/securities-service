@@ -17,6 +17,7 @@ type SecurityModel struct {
 const (
 	GetSecurity  = `SELECT id, symbol, name FROM securities WHERE id = ?`
 	GetBestPrice = `SELECT price FROM prices WHERE date = ? AND security_id = ? AND price_source_id = 1`
+	InsertSecurity  = `INSERT INTO securities (symbol, name) VALUES (?, ?)`
 )
 
 var (
@@ -56,4 +57,18 @@ func (m *SecurityModel) Get(id int) (*models.Security, error) {
 	}
 
 	return s, nil
+}
+
+func (m *SecurityModel) Insert(symbol string, name string) (int, error) {
+	r, err := m.DB.Exec(InsertSecurity, symbol, name)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := r.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
 }

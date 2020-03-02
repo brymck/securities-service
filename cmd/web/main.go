@@ -20,6 +20,7 @@ type application struct {
 	}
 	securities interface {
 		Get(int) (*models.Security, error)
+		Insert(string, string) (int, error)
 	}
 }
 
