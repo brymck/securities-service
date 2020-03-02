@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/brymck/securities-service/internal"
 	"github.com/brymck/securities-service/pkg/models"
 )
 
@@ -20,6 +21,7 @@ const (
 
 var (
 	easternTime *time.Location
+	now = time.Now
 )
 
 func init() {
@@ -28,10 +30,6 @@ func init() {
 	if err != nil {
 		panic(fmt.Sprintf("unable to load Eastern Time information: %v", err))
 	}
-}
-
-func latestBusinessEndOfDay() time.Time {
-	return time.Now().In(easternTime)
 }
 
 func (m *SecurityModel) Get(id int) (*models.Security, error) {
@@ -47,7 +45,7 @@ func (m *SecurityModel) Get(id int) (*models.Security, error) {
 		}
 	}
 
-	date := "2020-02-28"
+	date := internal.LatestBusinessEndOfDay(now().In(easternTime))
 	row = m.DB.QueryRow(GetBestPrice, date, id)
 	err = row.Scan(&s.Price)
 	if err != nil {
