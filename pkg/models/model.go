@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"time"
 )
 
 var (
@@ -13,4 +14,11 @@ type Security struct {
 	Symbol string
 	Name   string
 	Price  float64
+}
+
+type Price struct {
+	Date          *time.Time
+	SecurityId    int
+	PriceSourceId int
+	Price         float64
 }

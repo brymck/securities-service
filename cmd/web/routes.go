@@ -54,12 +54,42 @@ func (app *application) getSecurity(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (app *application) updatePrices(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	if err != nil || id < 1 {
+		webapp.NotFound(w)
+		return
+	}
+
+	s, err := app.securities.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			webapp.NotFound(w)
+		} else {
+			webapp.ServerError(w, err)
+		}
+		return
+	}
+
+	ts, err := getHistoricalPrices(s.Symbol)
+	if err != nil {
+		webapp.ServerError(w, err)
+	}
+
+	for _, item := range ts {
+		err = app.prices.Insert(item.Date, s.ID, 1, item.Price)
+		if err != nil {
+			webapp.ServerError(w, err)
+		}
+	}
+}
 
 func (app *application) Routes() http.Handler {
 	standardMiddleware := alice.New(app.logRequest)
 
 	mux := pat.New()
 	mux.Get("/security/:id", standardMiddleware.ThenFunc(app.getSecurity))
+	mux.Get("/security/:id/update-prices", standardMiddleware.ThenFunc(app.updatePrices))
 
 	return standardMiddleware.Then(mux)
 }

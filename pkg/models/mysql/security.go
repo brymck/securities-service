@@ -46,7 +46,7 @@ func (m *SecurityModel) Get(id int) (*models.Security, error) {
 	}
 
 	date := internal.LatestBusinessEndOfDay(now().In(easternTime))
-	row = m.DB.QueryRow(GetBestPrice, date, id)
+	row = m.DB.QueryRow(GetBestPrice, internal.IsoDate(date), id)
 	err = row.Scan(&s.Price)
 	if err != nil {
 		// Ignore if price is missing
