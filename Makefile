@@ -1,12 +1,13 @@
 OWNER := brymck
+PROTOS := alpha_vantage_api
 
 SERVICE_NAME := $(notdir $(CURDIR))
 GO_FILES := $(shell find . -name '*.go')
+PROTO_FILES := $(shell find proto -name '*.proto' 2>/dev/null) $(foreach proto,$(PROTOS),proto/$(proto).proto)
 PROTO_PATH := /usr/local/include
-PROTO_FILES := $(shell find proto -name '*.proto')
 GENPROTO_FILES := $(patsubst proto/%.proto,genproto/%.pb.go,$(PROTO_FILES))
 
-all: proto test build
+all: generate test build
 
 init: .init.stamp
 
@@ -15,10 +16,13 @@ init: .init.stamp
 	go mod download
 	touch $@
 
-proto: $(GENPROTO_FILES)
+generate: $(GENPROTO_FILES)
 
-genproto:
-	mkdir -p genproto
+proto genproto:
+	mkdir $@
+
+proto/alpha_vantage_api.proto: | proto
+	curl --location --output $@ --silent https://raw.githubusercontent.com/brymck/alpha-vantage-service/master/$@
 
 genproto/%.pb.go: proto/%.proto | .init.stamp genproto
 	protoc -Iproto -I$(PROTO_PATH) --go_out=plugins=grpc:$(dir $@) $<
@@ -40,6 +44,6 @@ docker:
 	docker build . --tag docker.pkg.github.com/$(OWNER)/$(SERVICE_NAME)/$(SERVICE_NAME)
 
 clean:
-	rm -rf genproto/ .init.stamp profile.out client service
+	rm -rf proto/ genproto/ .init.stamp profile.out client service
 
-.PHONY: all init proto test build run docker clean
+.PHONY: all init generate test build run docker clean
