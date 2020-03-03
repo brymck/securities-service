@@ -16,6 +16,7 @@ README.md
 # Project-specific
 #-----------------------------------------------------------------------------------------------------------------------
 genproto/
+proto/alpha_vantage_api.proto
 .*stamp
 service
 

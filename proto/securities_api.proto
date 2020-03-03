@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package brymck.alpha_vantage.v1;
+
+option go_package = "genproto";
+
+// The securities API
+service SecuritiesAPI {
+    // Get security
+    rpc GetSecurity (GetSecurityRequest) returns (GetSecurityResponse);
+
+    // Insert security
+    rpc InsertSecurity (InsertSecurityRequest) returns (InsertSecurityResponse);
+
+    // Update prices for a security
+    rpc UpdatePrices (UpdatePricesRequest) returns (UpdatePricesResponse);
+}
+
+message GetSecurityRequest {
+    int32 id = 1;
+
+    string symbol = 2;
+}
+
+message GetSecurityResponse {
+    Security security = 1;
+}
+
+message Security {
+    int32 id = 1;
+
+    string symbol = 2;
+
+    string name = 3;
+
+    double price = 4;
+}
+
+message InsertSecurityRequest {
+    Security security = 1;
+}
+
+message InsertSecurityResponse {
+    int32 id = 1;
+}
+
+message UpdatePricesRequest {
+    int32 id = 1;
+
+    string symbol = 2;
+}
+
+message UpdatePricesResponse {
+    int32 count = 1;
+}

@@ -2,129 +2,93 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"net/http"
-	"strconv"
 	"time"
 
-	"github.com/brymck/helpers/webapp"
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	pb "github.com/brymck/securities-service/genproto"
 	"github.com/brymck/securities-service/pkg/models"
 )
 
-type InsertSecurityRequest struct {
-	Symbol string `json:"symbol"`
-	Name   string `json:"name"`
-}
-
-func (app *application) getSecurity(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
-	if err != nil || id < 1 {
-		webapp.NotFound(w)
-		return
-	}
-
-	s, err := app.securities.Get(id)
+func (app *application) GetSecurity(ctx context.Context, in *pb.GetSecurityRequest) (*pb.GetSecurityResponse, error) {
+	s, err := app.securities.Get(in.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
-			webapp.NotFound(w)
+			err := status.Error(codes.NotFound, err.Error())
+			return nil, err
 		} else {
-			webapp.ServerError(w, err)
+			return nil, status.Error(codes.Internal, err.Error())
 		}
-		return
 	}
 
 	if s.Price == 0.0 {
 		log.Infof("retrieving missing price for %s", s.Symbol)
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
 		resp, err := alphaVantageApi.GetQuote(ctx, &pb.GetQuoteRequest{Symbol: s.Symbol})
 		if err != nil {
-			webapp.ServerError(w, err)
-			return
+			return nil, err
 		}
 		s.Price = resp.Price
 	}
 
-	err = json.NewEncoder(w).Encode(s)
-	if err != nil {
-		webapp.ServerError(w, err)
-	}
+	return &pb.GetSecurityResponse{
+		Security: &pb.Security{
+			Id:     s.ID,
+			Symbol: s.Symbol,
+			Name:   s.Name,
+			Price:  s.Price,
+		},
+	}, nil
 }
 
-func (app *application) insertSecurity(w http.ResponseWriter, r *http.Request) {
-	v := &InsertSecurityRequest{}
-	err := json.NewDecoder(r.Body).Decode(&v)
+func (app *application) InsertSecurity(_ context.Context, in *pb.InsertSecurityRequest) (*pb.InsertSecurityResponse, error) {
+	s := in.Security
+	if s.Symbol == "" {
+		return nil, status.Error(codes.InvalidArgument, "symbol cannot be blank")
+	}
+
+	if s.Name == "" {
+		return nil, status.Error(codes.InvalidArgument, "name cannot be blank")
+	}
+
+	id, err := app.securities.Insert(s.Symbol, s.Name)
 	if err != nil {
-		webapp.ClientError(w, http.StatusBadRequest)
-		return
+		return nil, err
 	}
 
-	if v.Symbol == "" {
-		log.Error("symbol cannot be blank")
-		webapp.ClientError(w, http.StatusBadRequest)
-		return
-	}
-
-	if v.Name == "" {
-		log.Error("name cannot be blank")
-		webapp.ClientError(w, http.StatusBadRequest)
-		return
-	}
-
-	id, err := app.securities.Insert(v.Symbol, v.Name)
-	if err != nil {
-		webapp.ServerError(w, err)
-		return
-	}
-
-	err = json.NewEncoder(w).Encode(&models.Security{ID: id})
-	if err != nil {
-		webapp.ServerError(w, err)
-	}
+	return &pb.InsertSecurityResponse{Id: id}, nil
 }
 
-func (app *application) updatePrices(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
-	if err != nil || id < 1 {
-		webapp.NotFound(w)
-		return
-	}
-
-	s, err := app.securities.Get(id)
+func (app *application) UpdatePrices(ctx context.Context, in *pb.UpdatePricesRequest) (*pb.UpdatePricesResponse, error) {
+	s, err := app.securities.Get(in.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
-			webapp.NotFound(w)
+			err := status.Error(codes.NotFound, err.Error())
+			return nil, err
 		} else {
-			webapp.ServerError(w, err)
+			return nil, status.Error(codes.Internal, err.Error())
 		}
-		return
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
 	resp, err := alphaVantageApi.GetTimeSeries(ctx, &pb.GetTimeSeriesRequest{Symbol: s.Symbol, Full: true})
 	if err != nil {
-		webapp.ServerError(w, err)
+		return nil, err
 	}
 
-	ts := make([]*DatePrice, len(resp.TimeSeries))
-	for i, item := range resp.TimeSeries {
-		date := time.Date(int(item.Date.Year), time.Month(item.Date.Month), int(item.Date.Day), 0, 0, 0, 0, time.UTC)
-		ts[i] = &DatePrice{Date: &date, Price: item.Close}
-	}
-
+	count := len(resp.TimeSeries)
 	start := time.Now()
-	log.Infof("inserting %d historical prices", len(ts))
-	for _, item := range ts {
-		err = app.prices.Insert(item.Date, s.ID, 1, item.Price)
+	log.Infof("inserting %d historical prices", count)
+	for _, item := range resp.TimeSeries {
+		date := time.Date(int(item.Date.Year), time.Month(item.Date.Month), int(item.Date.Day), 0, 0, 0, 0, time.UTC)
+		err = app.prices.Insert(&date, s.ID, 1, item.Close)
 		if err != nil {
-			webapp.ServerError(w, err)
+			return nil, err
 		}
 	}
 	end := time.Now()
-	log.Infof("inserted %d historical prices in %d ms", len(ts), end.Sub(start).Milliseconds())
+	log.Infof("inserted %d historical prices in %d ms", count, end.Sub(start).Milliseconds())
+
+	return &pb.UpdatePricesResponse{Count: int32(count)}, nil
 }

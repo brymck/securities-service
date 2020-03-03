@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -12,11 +11,6 @@ import (
 )
 
 var alphaVantageApi pb.AlphaVantageAPIClient
-
-type DatePrice struct {
-	Date  *time.Time
-	Price float64
-}
 
 func getServiceAddress(serviceName string) string {
 	return fmt.Sprintf("%s-4tt23pryoq-an.a.run.app:443", serviceName)

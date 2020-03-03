@@ -10,7 +10,7 @@ var (
 )
 
 type Security struct {
-	ID     int
+	ID     int32
 	Symbol string
 	Name   string
 	Price  float64
@@ -18,7 +18,7 @@ type Security struct {
 
 type Price struct {
 	Date          *time.Time
-	SecurityId    int
-	PriceSourceId int
+	SecurityId    int32
+	PriceSourceId int32
 	Price         float64
 }

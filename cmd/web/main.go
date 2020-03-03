@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/brymck/helpers/cloudsqlproxy"
-	"github.com/brymck/helpers/webapp"
+	"github.com/brymck/helpers/servers"
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 
+	pb "github.com/brymck/securities-service/genproto"
 	"github.com/brymck/securities-service/pkg/models"
 	"github.com/brymck/securities-service/pkg/models/mysql"
 )
@@ -16,11 +17,11 @@ import (
 type application struct {
 	db     *sql.DB
 	prices interface {
-		Insert(*time.Time, int, int, float64) error
+		Insert(*time.Time, int32, int32, float64) error
 	}
 	securities interface {
-		Get(int) (*models.Security, error)
-		Insert(string, string) (int, error)
+		Get(int32) (*models.Security, error)
+		Insert(string, string) (int32, error)
 	}
 }
 
@@ -36,5 +37,7 @@ func main() {
 		securities: &mysql.SecurityModel{DB: db},
 	}
 
-	webapp.Serve(app)
+	s := servers.NewGrpcServer()
+	pb.RegisterSecuritiesAPIServer(s.Server, app)
+	s.Serve()
 }

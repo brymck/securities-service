@@ -33,7 +33,7 @@ func init() {
 	}
 }
 
-func (m *SecurityModel) Get(id int) (*models.Security, error) {
+func (m *SecurityModel) Get(id int32) (*models.Security, error) {
 	s := &models.Security{}
 
 	row := m.DB.QueryRow(GetSecurity, id)
@@ -59,7 +59,7 @@ func (m *SecurityModel) Get(id int) (*models.Security, error) {
 	return s, nil
 }
 
-func (m *SecurityModel) Insert(symbol string, name string) (int, error) {
+func (m *SecurityModel) Insert(symbol string, name string) (int32, error) {
 	r, err := m.DB.Exec(InsertSecurity, symbol, name)
 	if err != nil {
 		return 0, err
@@ -70,5 +70,5 @@ func (m *SecurityModel) Insert(symbol string, name string) (int, error) {
 		return 0, err
 	}
 
-	return int(id), nil
+	return int32(id), nil
 }
