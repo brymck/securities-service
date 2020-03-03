@@ -15,14 +15,14 @@ type SecurityModel struct {
 }
 
 const (
-	GetSecurity  = `SELECT id, symbol, name FROM securities WHERE id = ?`
-	GetBestPrice = `SELECT price FROM prices WHERE date = ? AND security_id = ? AND price_source_id = 1`
-	InsertSecurity  = `INSERT INTO securities (symbol, name) VALUES (?, ?)`
+	GetSecurity    = `SELECT id, symbol, name FROM securities WHERE id = ?`
+	GetBestPrice   = `SELECT price FROM prices WHERE date = ? AND security_id = ? AND price_source_id = 1`
+	InsertSecurity = `INSERT INTO securities (symbol, name) VALUES (?, ?)`
 )
 
 var (
 	easternTime *time.Location
-	now = time.Now
+	now         = time.Now
 )
 
 func init() {

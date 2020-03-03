@@ -22,7 +22,7 @@ func LatestBusinessEndOfDay(date time.Time) time.Time {
 		}
 	}
 	year, month, day := date.Date()
-	return time.Date(year, month, day, EndOfDayHour, 0, 0, 0,  date.Location())
+	return time.Date(year, month, day, EndOfDayHour, 0, 0, 0, date.Location())
 }
 
 func IsoDate(date time.Time) string {

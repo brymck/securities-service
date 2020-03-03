@@ -7,7 +7,6 @@ import (
 	"github.com/justinas/alice"
 )
 
-
 func (app *application) Routes() http.Handler {
 	standardMiddleware := alice.New(app.logRequest)
 
