@@ -1,5 +1,6 @@
 PROTOS := alpha_vantage_api
 
+PROJECT_ID = $(shell gcloud config get-value project)
 SERVICE_NAME := $(notdir $(CURDIR))
 GO_FILES := $(shell find . -name '*.go')
 PROTO_FILES := $(shell find proto -name '*.proto' 2>/dev/null) $(foreach proto,$(PROTOS),proto/$(proto).proto)
@@ -40,7 +41,7 @@ run: service
 	./service
 
 docker:
-	docker build . --tag gcr.io/$(shell gcloud config get-value project)/$(SERVICE_NAME)
+	docker build . --tag gcr.io/$(PROJECT_ID)/$(SERVICE_NAME)
 
 clean:
 	rm -rf proto/ genproto/ .init.stamp profile.out client service
