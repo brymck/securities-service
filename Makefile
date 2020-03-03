@@ -1,4 +1,3 @@
-OWNER := brymck
 PROTOS := alpha_vantage_api
 
 SERVICE_NAME := $(notdir $(CURDIR))
@@ -41,7 +40,7 @@ run: service
 	./service
 
 docker:
-	docker build . --tag docker.pkg.github.com/$(OWNER)/$(SERVICE_NAME)/$(SERVICE_NAME)
+	docker build . --tag gcr.io/$(shell gcloud config get-value project)/$(SERVICE_NAME)
 
 clean:
 	rm -rf proto/ genproto/ .init.stamp profile.out client service
