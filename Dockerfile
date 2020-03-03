@@ -2,7 +2,7 @@
 FROM golang:alpine as builder
 
 # Install dependencies
-RUN apk update && apk add --no-cache ca-certificates git make protobuf-dev tzdata upx && update-ca-certificates
+RUN apk update && apk add --no-cache ca-certificates curl git make protobuf-dev tzdata upx && update-ca-certificates
 WORKDIR /src
 
 # Use an uncredentialed user
