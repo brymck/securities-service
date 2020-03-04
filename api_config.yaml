@@ -1,0 +1,11 @@
+type: google.api.Service
+config_version: 3
+name: gateway-4tt23pryoq-an.a.run.app
+title: Securities API
+apis:
+- name: brymck.alpha_vantage.v1.SecuritiesAPI
+backend:
+  rules:
+    - selector: "*"
+      address: grpcs://securities-service-4tt23pryoq-an.a.run.app
+

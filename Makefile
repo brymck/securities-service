@@ -40,6 +40,9 @@ service: $(GO_FILES) $(GENPROTO_FILES) | .init.stamp
 run: service
 	./service
 
+client: $(GO_FILES) $(GENPROTO_FILES) | .init.stamp
+	go build -ldflags='-w -s' -o client cmd/client/*.go
+
 docker:
 	docker build . --tag gcr.io/$(PROJECT_ID)/$(SERVICE_NAME)
 

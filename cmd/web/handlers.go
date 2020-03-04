@@ -72,7 +72,7 @@ func (app *application) UpdatePrices(ctx context.Context, in *pb.UpdatePricesReq
 		}
 	}
 
-	resp, err := alphaVantageApi.GetTimeSeries(ctx, &pb.GetTimeSeriesRequest{Symbol: s.Symbol, Full: true})
+	resp, err := alphaVantageApi.GetTimeSeries(ctx, &pb.GetTimeSeriesRequest{Symbol: s.Symbol, Full: in.Full})
 	if err != nil {
 		return nil, err
 	}

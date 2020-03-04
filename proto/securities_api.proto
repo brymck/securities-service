@@ -48,6 +48,8 @@ message UpdatePricesRequest {
     int32 id = 1;
 
     string symbol = 2;
+
+    bool full = 3;
 }
 
 message UpdatePricesResponse {
