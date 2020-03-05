@@ -1,4 +1,4 @@
-PROTOS := alpha_vantage_api
+PROTOS := brymck/alpha_vantage/v1/alpha_vantage_api
 
 PROJECT_ID = $(shell gcloud config get-value project)
 SERVICE_NAME := $(notdir $(CURDIR))
@@ -7,7 +7,7 @@ PROTO_FILES := $(shell find proto -name '*.proto' 2>/dev/null) $(foreach proto,$
 PROTO_PATH := /usr/local/include
 GENPROTO_FILES := $(patsubst proto/%.proto,genproto/%.pb.go,$(PROTO_FILES))
 
-all: generate test build
+all: proto test build
 
 init: .init.stamp
 
@@ -16,16 +16,15 @@ init: .init.stamp
 	go mod download
 	touch $@
 
-generate: $(GENPROTO_FILES)
+proto: $(GENPROTO_FILES)
 
-proto genproto:
-	mkdir $@
-
-proto/alpha_vantage_api.proto: | proto
+proto/brymck/alpha_vantage/v1/alpha_vantage_api.proto:
+	mkdir -p $(dir $@)
 	curl --location --output $@ --silent https://raw.githubusercontent.com/brymck/alpha-vantage-service/master/$@
 
-genproto/%.pb.go: proto/%.proto | .init.stamp genproto
-	protoc -Iproto -I$(PROTO_PATH) --go_out=plugins=grpc:$(dir $@) $<
+genproto/%.pb.go: proto/%.proto | .init.stamp
+	mkdir -p $(dir $@)
+	protoc -Iproto -I$(PROTO_PATH) --go_out=plugins=grpc:genproto $<
 
 test: profile.out
 
@@ -47,6 +46,6 @@ docker:
 	docker build . --tag gcr.io/$(PROJECT_ID)/$(SERVICE_NAME)
 
 clean:
-	rm -rf proto/alpha_vantage_api.proto genproto/ .init.stamp profile.out client service
+	rm -rf proto/alpha_vantage genproto/ .init.stamp profile.out client service
 
-.PHONY: all init generate test build run docker clean
+.PHONY: all init proto test build run docker clean

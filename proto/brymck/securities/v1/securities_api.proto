@@ -1,8 +1,6 @@
 syntax = "proto3";
 
-package brymck.alpha_vantage.v1;
-
-option go_package = "genproto";
+package brymck.securities.v1;
 
 // The securities API
 service SecuritiesAPI {
@@ -11,6 +9,9 @@ service SecuritiesAPI {
 
     // Insert security
     rpc InsertSecurity (InsertSecurityRequest) returns (InsertSecurityResponse);
+
+    // Get prices for a security
+    rpc GetPrices (GetPricesRequest) returns (GetPricesResponse);
 
     // Update prices for a security
     rpc UpdatePrices (UpdatePricesRequest) returns (UpdatePricesResponse);
@@ -44,6 +45,18 @@ message InsertSecurityResponse {
     uint64 id = 1;
 }
 
+message GetPricesRequest {
+    uint64 id = 1;
+
+    Date startDate = 2;
+
+    Date endDate = 3;
+}
+
+message GetPricesResponse {
+    repeated Price prices = 1;
+}
+
 message UpdatePricesRequest {
     uint64 id = 1;
 
@@ -54,4 +67,22 @@ message UpdatePricesRequest {
 
 message UpdatePricesResponse {
     uint64 count = 1;
+}
+
+message Price {
+    Date date = 1;
+
+    double price = 2;
+}
+
+// A whole or partial calendar date, where the time of day and time zone are not significant
+message Date {
+    // Year of date
+    int32 year = 1;
+
+    // Month of year
+    int32 month = 2;
+
+    // Day of month
+    int32 day = 3;
 }

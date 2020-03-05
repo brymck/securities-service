@@ -7,10 +7,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	pb "github.com/brymck/securities-service/genproto"
+	av "github.com/brymck/securities-service/genproto/brymck/alpha_vantage/v1"
 )
 
-var alphaVantageApi pb.AlphaVantageAPIClient
+var alphaVantageApi av.AlphaVantageAPIClient
 
 func getServiceAddress(serviceName string) string {
 	return fmt.Sprintf("%s-4tt23pryoq-an.a.run.app:443", serviceName)
@@ -22,5 +22,5 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	alphaVantageApi = pb.NewAlphaVantageAPIClient(conn)
+	alphaVantageApi = av.NewAlphaVantageAPIClient(conn)
 }

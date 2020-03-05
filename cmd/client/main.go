@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	pb "github.com/brymck/securities-service/genproto"
+	sec "github.com/brymck/securities-service/genproto/brymck/securities/v1"
 )
 
 type tokenAuth struct {
@@ -57,11 +57,11 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewSecuritiesAPIClient(conn)
+	c := sec.NewSecuritiesAPIClient(conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	r, err := c.GetSecurity(ctx, &pb.GetSecurityRequest{Id: uint64(id)})
+	r, err := c.GetSecurity(ctx, &sec.GetSecurityRequest{Id: uint64(id)})
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}

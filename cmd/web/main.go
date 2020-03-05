@@ -9,7 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 
-	pb "github.com/brymck/securities-service/genproto"
+	sec "github.com/brymck/securities-service/genproto/brymck/securities/v1"
 	"github.com/brymck/securities-service/pkg/models"
 	"github.com/brymck/securities-service/pkg/models/mysql"
 )
@@ -17,6 +17,7 @@ import (
 type application struct {
 	db     *sql.DB
 	prices interface {
+		GetMany(*time.Time, *time.Time, uint64, uint32) ([]*models.Price, error)
 		Insert(*time.Time, uint64, uint32, float64) error
 	}
 	securities interface {
@@ -38,6 +39,6 @@ func main() {
 	}
 
 	s := servers.NewGrpcServer()
-	pb.RegisterSecuritiesAPIServer(s.Server, app)
+	sec.RegisterSecuritiesAPIServer(s.Server, app)
 	s.Serve()
 }
