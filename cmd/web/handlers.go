@@ -66,7 +66,7 @@ func (app *application) InsertSecurity(_ context.Context, in *sec.InsertSecurity
 func (app *application) GetPrices(_ context.Context, in *sec.GetPricesRequest) (*sec.GetPricesResponse, error) {
 	startDate := time.Date(int(in.StartDate.Year), time.Month(in.StartDate.Month), int(in.StartDate.Day), 0, 0, 0, 0, time.UTC)
 	endDate := time.Date(int(in.EndDate.Year), time.Month(in.EndDate.Month), int(in.EndDate.Day), 0, 0, 0, 0, time.UTC)
-	log.Infof("requesting prices for %s between %s and %s", in.Id, dates.IsoDate(startDate), dates.IsoDate(endDate))
+	log.Infof("requesting prices for %d between %s and %s", in.Id, dates.IsoDate(startDate), dates.IsoDate(endDate))
 	records, err := app.prices.GetMany(&startDate, &endDate, in.Id, 1)
 	if err != nil {
 		return nil, err
