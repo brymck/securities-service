@@ -17,11 +17,11 @@ import (
 type application struct {
 	db     *sql.DB
 	prices interface {
-		Insert(*time.Time, int32, int32, float64) error
+		Insert(*time.Time, uint64, uint32, float64) error
 	}
 	securities interface {
-		Get(int32) (*models.Security, error)
-		Insert(string, string) (int32, error)
+		Get(uint64) (*models.Security, error)
+		Insert(string, string) (uint64, error)
 	}
 }
 

@@ -17,7 +17,7 @@ service SecuritiesAPI {
 }
 
 message GetSecurityRequest {
-    int32 id = 1;
+    uint64 id = 1;
 
     string symbol = 2;
 }
@@ -27,7 +27,7 @@ message GetSecurityResponse {
 }
 
 message Security {
-    int32 id = 1;
+    uint64 id = 1;
 
     string symbol = 2;
 
@@ -41,11 +41,11 @@ message InsertSecurityRequest {
 }
 
 message InsertSecurityResponse {
-    int32 id = 1;
+    uint64 id = 1;
 }
 
 message UpdatePricesRequest {
-    int32 id = 1;
+    uint64 id = 1;
 
     string symbol = 2;
 
@@ -53,5 +53,5 @@ message UpdatePricesRequest {
 }
 
 message UpdatePricesResponse {
-    int32 count = 1;
+    uint64 count = 1;
 }

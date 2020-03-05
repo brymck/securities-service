@@ -90,5 +90,5 @@ func (app *application) UpdatePrices(ctx context.Context, in *pb.UpdatePricesReq
 	end := time.Now()
 	log.Infof("inserted %d historical prices in %d ms", count, end.Sub(start).Milliseconds())
 
-	return &pb.UpdatePricesResponse{Count: int32(count)}, nil
+	return &pb.UpdatePricesResponse{Count: uint64(count)}, nil
 }

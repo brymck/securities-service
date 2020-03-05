@@ -47,6 +47,6 @@ docker:
 	docker build . --tag gcr.io/$(PROJECT_ID)/$(SERVICE_NAME)
 
 clean:
-	rm -rf proto/ genproto/ .init.stamp profile.out client service
+	rm -rf proto/alpha_vantage_api.proto genproto/ .init.stamp profile.out client service
 
 .PHONY: all init generate test build run docker clean

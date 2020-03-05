@@ -61,7 +61,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	r, err := c.GetSecurity(ctx, &pb.GetSecurityRequest{Id: int32(id)})
+	r, err := c.GetSecurity(ctx, &pb.GetSecurityRequest{Id: uint64(id)})
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}

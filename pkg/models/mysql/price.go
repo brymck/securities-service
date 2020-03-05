@@ -15,7 +15,7 @@ type PriceModel struct {
 	DB *sql.DB
 }
 
-func (m *PriceModel) Insert(date *time.Time, securityId int32, priceSourceId int32, price float64) error {
+func (m *PriceModel) Insert(date *time.Time, securityId uint64, priceSourceId uint32, price float64) error {
 	_, err := m.DB.Exec(InsertPrice, date, securityId, priceSourceId, price)
 	if err != nil {
 		return err
