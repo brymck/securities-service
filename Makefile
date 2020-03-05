@@ -20,7 +20,7 @@ proto: $(GENPROTO_FILES)
 
 proto/brymck/alpha_vantage/v1/alpha_vantage_api.proto:
 	mkdir -p $(dir $@)
-	curl --location --output $@ --silent https://raw.githubusercontent.com/brymck/alpha-vantage-service/master/$@
+	curl --fail --location --output $@ --silent --show-error https://raw.githubusercontent.com/brymck/securities-service/master/$@
 
 genproto/%.pb.go: proto/%.proto | .init.stamp
 	mkdir -p $(dir $@)
