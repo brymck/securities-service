@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	dt "github.com/brymck/helpers/dates"
+
 	"github.com/brymck/securities-service/pkg/dates"
 	"github.com/brymck/securities-service/pkg/models"
 )
@@ -47,7 +49,7 @@ func (m *SecurityModel) Get(id uint64) (*models.Security, error) {
 	}
 
 	date := dates.LatestBusinessEndOfDay(now().In(easternTime))
-	row = m.DB.QueryRow(GetBestPrice, dates.IsoDate(date), id)
+	row = m.DB.QueryRow(GetBestPrice, dt.IsoFormat(date), id)
 	err = row.Scan(&s.Price)
 	if err != nil {
 		// Ignore if price is missing

@@ -6,13 +6,13 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/brymck/helpers/dates"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	av "github.com/brymck/securities-service/genproto/brymck/alpha_vantage/v1"
 	sec "github.com/brymck/securities-service/genproto/brymck/securities/v1"
-	"github.com/brymck/securities-service/pkg/dates"
 	"github.com/brymck/securities-service/pkg/models"
 )
 
@@ -74,9 +74,9 @@ func (app *application) InsertSecurity(_ context.Context, in *sec.InsertSecurity
 }
 
 func (app *application) GetPrices(_ context.Context, in *sec.GetPricesRequest) (*sec.GetPricesResponse, error) {
-	startDate := time.Date(int(in.StartDate.Year), time.Month(in.StartDate.Month), int(in.StartDate.Day), 0, 0, 0, 0, time.UTC)
-	endDate := time.Date(int(in.EndDate.Year), time.Month(in.EndDate.Month), int(in.EndDate.Day), 0, 0, 0, 0, time.UTC)
-	log.Infof("requesting prices for %d between %s and %s", in.Id, dates.IsoDate(startDate), dates.IsoDate(endDate))
+	startDate := dates.ProtoDateToTime(in.StartDate)
+	endDate := dates.ProtoDateToTime(in.EndDate)
+	log.Infof("requesting prices for %d between %s and %s", in.Id, dates.IsoFormat(startDate), dates.IsoFormat(endDate))
 	records, err := app.prices.GetMany(&startDate, &endDate, in.Id, 1)
 	if err != nil {
 		return nil, err
