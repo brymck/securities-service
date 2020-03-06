@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"strconv"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -16,6 +17,13 @@ import (
 )
 
 func (app *application) GetSecurity(ctx context.Context, in *sec.GetSecurityRequest) (*sec.GetSecurityResponse, error) {
+	response := &sec.GetSecurityResponse{}
+
+	key := strconv.FormatUint(in.Id, 16)
+	if err := app.getCache(key, response); err == nil {
+		return response, nil
+	}
+
 	s, err := app.securities.Get(in.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
@@ -35,14 +43,16 @@ func (app *application) GetSecurity(ctx context.Context, in *sec.GetSecurityRequ
 		s.Price = resp.Price
 	}
 
-	return &sec.GetSecurityResponse{
+	response = &sec.GetSecurityResponse{
 		Security: &sec.Security{
 			Id:     s.ID,
 			Symbol: s.Symbol,
 			Name:   s.Name,
 			Price:  s.Price,
 		},
-	}, nil
+	}
+	_ = app.setCache(key, response)
+	return response, nil
 }
 
 func (app *application) InsertSecurity(_ context.Context, in *sec.InsertSecurityRequest) (*sec.InsertSecurityResponse, error) {
@@ -84,6 +94,9 @@ func (app *application) GetPrices(_ context.Context, in *sec.GetPricesRequest) (
 }
 
 func (app *application) UpdatePrices(ctx context.Context, in *sec.UpdatePricesRequest) (*sec.UpdatePricesResponse, error) {
+	key := strconv.FormatUint(in.Id, 16)
+	_ = app.cache.Delete(key)
+
 	s, err := app.securities.Get(in.Id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {

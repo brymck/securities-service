@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/allegro/bigcache"
 	"github.com/brymck/helpers/cloudsqlproxy"
 	"github.com/brymck/helpers/servers"
 	_ "github.com/go-sql-driver/mysql"
@@ -15,6 +16,7 @@ import (
 )
 
 type application struct {
+	cache  *bigcache.BigCache
 	db     *sql.DB
 	prices interface {
 		GetMany(*time.Time, *time.Time, uint64, uint32) ([]*models.Price, error)
@@ -31,8 +33,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	cache, err := bigcache.NewBigCache(bigcache.DefaultConfig(10 * time.Minute))
+	if err != nil {
+		panic(err)
+	}
 
 	app := &application{
+		cache:      cache,
 		db:         db,
 		prices:     &mysql.PriceModel{DB: db},
 		securities: &mysql.SecurityModel{DB: db},
