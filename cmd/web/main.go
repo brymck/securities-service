@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/allegro/bigcache"
+	sec "github.com/brymck/genproto/brymck/securities/v1"
 	"github.com/brymck/helpers/cloudsqlproxy"
 	"github.com/brymck/helpers/servers"
 	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 
-	sec "github.com/brymck/securities-service/genproto/brymck/securities/v1"
 	"github.com/brymck/securities-service/pkg/models"
 	"github.com/brymck/securities-service/pkg/models/mysql"
 )

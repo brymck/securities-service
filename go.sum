@@ -20,6 +20,11 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/allegro/bigcache v1.2.1 h1:hg1sY1raCwic3Vnsvje6TT7/pnZba83LeFck5NrFKSc=
 github.com/allegro/bigcache v1.2.1/go.mod h1:Cb/ax3seSYIx7SuZdm2G2xzfwmv3TPSk2ucNfQESPXM=
+github.com/brymck/alpha-vantage-service v0.0.0-20200308172230-0a75d17bba17 h1:Do6XesrUN7RBIgTzTFZjn/DAHG7guEp1UEScc9WKQmQ=
+github.com/brymck/alpha-vantage-service v0.0.0-20200308172230-0a75d17bba17/go.mod h1:odPi/mooHEtghaV+zlJ+u/Dhdot/weTN4MqMqweqcf0=
+github.com/brymck/genproto v0.0.0-20200308171659-498ebc209346 h1:d+dpTwR0t48QlVyrW201SN9ugg2CLFWDkdtxaSYAVQ0=
+github.com/brymck/genproto v0.0.0-20200308171659-498ebc209346/go.mod h1:8i+Ulugidt0csnkd0pcaMv/zdQ05cr+nOijF1b1jUxM=
+github.com/brymck/helpers v0.0.0-20200229151725-7ebcbedabd08/go.mod h1:TavkBEpkR3owp7CUFxTRblXDMlU964upJ2ff86Cv0l4=
 github.com/brymck/helpers v0.0.0-20200306110714-66bbc1c50fcc h1:yB9F+8uYlL/nWlun+rPPW7maCCo/H1T+mpdtFb1Js7A=
 github.com/brymck/helpers v0.0.0-20200306110714-66bbc1c50fcc/go.mod h1:TavkBEpkR3owp7CUFxTRblXDMlU964upJ2ff86Cv0l4=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=

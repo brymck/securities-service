@@ -6,13 +6,14 @@ import (
 	"strconv"
 	"time"
 
+	av "github.com/brymck/alpha-vantage-service/genproto/brymck/alpha_vantage/v1"
+	dt "github.com/brymck/genproto/brymck/dates/v1"
+	sec "github.com/brymck/genproto/brymck/securities/v1"
 	"github.com/brymck/helpers/dates"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	av "github.com/brymck/securities-service/genproto/brymck/alpha_vantage/v1"
-	sec "github.com/brymck/securities-service/genproto/brymck/securities/v1"
 	"github.com/brymck/securities-service/pkg/models"
 )
 
@@ -85,7 +86,7 @@ func (app *application) GetPrices(_ context.Context, in *sec.GetPricesRequest) (
 	var prices []*sec.Price
 	for _, item := range records {
 		year, month, day := item.Date.Date()
-		date := sec.Date{Year: int32(year), Month: int32(month), Day: int32(day)}
+		date := dt.Date{Year: int32(year), Month: int32(month), Day: int32(day)}
 		price := sec.Price{Date: &date, Price: item.Price}
 		prices = append(prices, &price)
 	}

@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	av "github.com/brymck/securities-service/genproto/brymck/alpha_vantage/v1"
+	av "github.com/brymck/alpha-vantage-service/genproto/brymck/alpha_vantage/v1"
 )
 
 var alphaVantageApi av.AlphaVantageAPIClient

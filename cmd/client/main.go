@@ -9,10 +9,9 @@ import (
 	"strconv"
 	"time"
 
+	sec "github.com/brymck/genproto/brymck/securities/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-
-	sec "github.com/brymck/securities-service/genproto/brymck/securities/v1"
 )
 
 type tokenAuth struct {
