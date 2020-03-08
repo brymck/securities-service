@@ -1,5 +1,6 @@
 PROJECT_ID = $(shell gcloud config get-value project)
 SERVICE_NAME := $(notdir $(CURDIR))
+GO_FILES := $(shell find . -name '*.go')
 
 all: test build
 
