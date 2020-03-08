@@ -19,14 +19,10 @@ service: $(GO_FILES)
 run: service
 	./service
 
-client: $(GO_FILES)
-	go mod download
-	go build -ldflags='-w -s' -o client cmd/client/*.go
-
 docker:
 	docker build . --tag gcr.io/$(PROJECT_ID)/$(SERVICE_NAME)
 
 clean:
-	rm -rf profile.out client service
+	rm -rf profile.out service
 
 .PHONY: all test build run docker clean
