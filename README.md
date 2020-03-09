@@ -2,4 +2,3 @@ securities-service
 ==================
 
 Securities service
-
